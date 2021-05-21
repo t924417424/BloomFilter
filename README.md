@@ -1,7 +1,22 @@
 # Go语言BloomFilter包（布隆过滤器）
 
-## 安装
+## 安装使用
 `go get github.com/t924417424/BloomFilter`
+```go
+package main
+
+import (
+	"github.com/t924417424/BloomFilter"
+)
+
+func main() {
+	filter := bloomfilter.NewBloomfilter(bloomfilter.Config{HashLoop: 30})
+	filter.Insert([]byte("123"))
+	println(filter.Contains([]byte("123")))
+	filter.Debug()
+}
+```
+
 
 ## 测试用例
 ```go
