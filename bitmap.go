@@ -6,14 +6,14 @@ import (
 )
 
 type bitmap struct {
-	sync.RWMutex
+	m    sync.RWMutex
 	data []byte
 }
 
 // 二进制打印bitmap
 func (b *bitmap) debug() {
-	b.RLock()
-	defer b.RUnlock()
+	b.m.RLock()
+	defer b.m.RUnlock()
 	for i := range b.data {
 		fmt.Printf("%08b", b.data[i])
 	}
@@ -21,21 +21,21 @@ func (b *bitmap) debug() {
 
 // 将数据插入bitmap
 func (b *bitmap) insert(indexs []int) {
-	b.Lock()
+	b.m.Lock()
 	for i := range indexs {
 		b.data[indexs[i]] |= 1 << (indexs[i] % 8)
 	}
-	b.Unlock()
+	b.m.Unlock()
 }
 
 func (b *bitmap) contains(indexs []int) bool {
-	b.RLock()
+	b.m.RLock()
 	for i := range indexs {
 		match := 1 << (indexs[i] % 8)
 		if b.data[indexs[i]]&(1<<(indexs[i]%8)) != byte(match) {
 			return false
 		}
 	}
-	b.RUnlock()
+	b.m.RUnlock()
 	return true
 }
